@@ -3,7 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
     <title>경주 여행</title>
+    <script>       
+        $(function(){
+            $('#searchBtn').click(function(){                
+                $.ajax({
+                    url: '/tour/ajax_date/',                    
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' },                    
+                    type: 'POST',
+                    // name이 tsearch인 검색창에서 사용자가 입력한 값 가져오기
+                    // val()은 검색창에 입력된 값을 가져오는 기능
+                    // 가져온 값을 tsearch라는 이름으로 views.py에 전달
+                    data: {'tsearch': $('input[name=tsearch]').val()},                    
+                    dataType: 'json',                   
+                    // data는 views.py에서 반환한 전체 데이터
+                    success: function(data){
+                        // 기존에 출력된 '등록된 여행검색이 없습니다.' 문구 제거
+                        $('#noResult').text('');
+                        // views.py에서 전달한 intro 데이터를 경주 소개 영역에 출력
+                        $('#introText').text(data.intro);
+                        // gpt가 생성한 여행정보를 여행 결과 영역에 출력
+                        $('#resultText').text(data.result);
+                    },
+                    // 서버와 데이터 통신에 실패했을 때 실행
+                    error: function(){
+                        alert('검색 실패');
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
 <!-- HEADER -->
@@ -51,13 +81,13 @@
                 <option value="내장산">내장산</option>
                 <option value="설악산">설악산</option>
             </select>
-            <input name="msearch" placeholder="검색어를 입력하세요." type="text"/>
+            <input name="tsearch" placeholder="검색어를 입력하세요." type="text"/>
             <button type="submit">검색</button>
         </div>
     </form>
 
 <!-- Tour LIST -->
-<div class="board-wrap">
+<div class="tour-wrap">
     {% if result %}
         <div class="tour-info">
             <p>{{ result }}</p>

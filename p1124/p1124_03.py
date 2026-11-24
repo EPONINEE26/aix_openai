@@ -29,7 +29,7 @@ print(client)
 
 try: 
     response = client.responses.create(
-        model='gpt-5.6', # 공백 제거 및 유효한 모델명으로 수정
+        model='gpt-5.6', 
         instructions=(
             "당신은 여행설계 전문가입니다. "
             "여행일정을 1박2일 코스로 설계해주세요.. "
