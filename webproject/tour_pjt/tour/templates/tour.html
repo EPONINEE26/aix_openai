@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>경주 여행</title>
+</head>
+<body>
+<!-- HEADER -->
+<header>
+<div class="top">
+    <div class="logo">경주여행</div>
+        <ul class="menu">
+            <li><a href="/tour/tlist/">여행일정</a></li>
+            <li><a href="/tour/tplace/">여행지</a></li>
+            <li><a href="/tour/tstay/">숙소</a></li>
+            <li><a href="/tour/tfood/">식사추천</a></li>
+        </ul>
+    </div>    
+</header>
+    <!-- VISUAL -->
+    <section class="visual">
+    <div>
+    <h1>SEARCH</h1>
+    <p>원하는 여행을 검색하세요.</p>
+    </div>
+    </section>
+
+    <!-- CONTENT -->
+    <main>
+    <div class="container">
+    <div class="breadcrumb">
+        HOME
+        <span>></span>
+        경주
+        <span>></span>
+        SEARCH RESULT
+    </div>
+
+    <div class="title">
+    <h2>SEARCH RESULT</h2>
+    <p>찾는 검색 결과입니다.</p>
+    </div>
+
+    <!-- SEARCH -->
+    <form action="/tour/tlist/" name="searchFrm" method="post">
+        {% csrf_token %}
+        <div class="search">
+            <select id="searchType" name="searchType">
+                <option value="경주">경주</option>
+                <option value="내장산">내장산</option>
+                <option value="설악산">설악산</option>
+            </select>
+            <input name="msearch" placeholder="검색어를 입력하세요." type="text"/>
+            <button type="submit">검색</button>
+        </div>
+    </form>
+
+<!-- Tour LIST -->
+<div class="board-wrap">
+    {% if result %}
+        <div class="tour-info">
+            <p>{{ result }}</p>
+        </div>
+    {% else %}
+        <p>등록된 여행검색이 없습니다.</p>
+    {% endif %}
+</div>
+    
+    <!-- PAGINATION -->
+    <div class="pagination">
+    <a href="#">«</a>
+    <a href="#">‹</a>
+    <a class="active" href="#">1</a>
+    <a href="#">›</a>
+    <a href="#">»</a>
+    </div>
+    </div>
+    </main>
+    <!-- FOOTER -->
+    <footer>
+    <div class="footer-inner">
+    <div class="footer-menu">
+    <a href="#">회사소개</a>
+    <a href="#">오시는 길</a>
+    <a href="#">개인정보처리방침</a>
+    <a href="#">이용약관</a>
+    <a href="#">이메일무단수집거부</a>
+    </div>
+    <div class="footer-info">
+                우리 영화 이야기\
+                서울시 관악구 신림동 우장빌딩 5층\
+                대표번호 : 010-123-4567
+            </div>
+    </div>
+    </footer>    
+</body>
+</html>
+
+

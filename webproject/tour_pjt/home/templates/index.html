@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>경주여행코스소개</title>
+</head>
+    <body>
+        <h1>경주여행코스소개</h1>
+        <p>경주 여행 1박 2일 코스</p>
+        </div>
+        </section>
+    <!-- CONTENT -->
+    <main>
+        <div class="container">
+            <div class="breadcrumb">
+                HOME
+                <span>></span>
+                경주소개
+                <span>></span>
+                경주, 내장산, 설악산
+            </div>
+
+            <div class="title">
+                <h2>경주</h2>
+                <p>경주여행코스</p>                
+            </div>
+            <!-- Tour LIST -->
+        <div class="movie-list">
+            <a href="/tour/tlist/" class="tour-item">
+                <td class="number">{{tour.tno}}</td>
+                <div class="thumb">
+                    <img src="/static/images/경주.png"   alt="경주소개">                    
+                </div>
+                <div class="tour-content">
+                    <h3>{{tour.title}}경주</h3>
+                    <p>{{tour.story}}더욱 다양해진 경주여행과 함께 <br> 나만의 휴식시간을 만나보세요</p>
+                    <span class="date">{{tour.tdate|date:"Y-m-d"}}</span>
+                </div>
+                <div class="category">경주여행</div>
+            </a>
+
+            <a href="/tour/내장산/" class="tour-item ">
+                <td class="number">{{tour.tno}}</td>
+                <div class="thumb">
+                    <img src="/static/images/내장산.jpg" alt="내장산">                    
+                </div>
+                <div class="tour-content">
+                    <h3>{{tour.title}}내장산여행</h3>
+                    <p>{{bboard.story}}더욱 다양해진 내장산여행과 함께 <br> 나만의 휴식시간을 만나보세요</p>
+                    <span class="date">{{tour.tdate|date:"Y-m-d"}}</span>
+                </div>
+                <div class="category">내장산여행</div>
+            </a>
+
+   
+            <a href="/tour/설악산/" class="tour-item ">
+                <td class="number">{{tour.tno}}</td> 
+                <div class="thumb">
+                    <img src="/static/images/설악산" alt="설악산여행">                    
+                </div>
+                <div class="tour-content">
+                    <h3>{{tour.title}}설악산여행</h3>
+                    <p>{{tour.story}}더욱 다양해진 설악산여행과 함께 <br> 나만의 휴식시간을 만나보세요</p>
+                    <span class="date">{{tour.tdate|date:"Y-m-d"}}</span>
+                </div>
+                <div class="category">설악산여행/div>
+            </a>
+
+        <!-- PAGINATION -->
+        <div class="pagination">
+            <a href="#">«</a>
+            <a href="#">‹</a>
+            <a href="#" class="active">1</a>
+            <a href="#">›</a>
+            <a href="#">»</a>
+        </div>
+    </div>
+</main>
+
+
+<!-- FOOTER -->
+<footer>
+
+    <div class="footer-inner">
+        <div class="footer-menu">
+            <a href="#">회사소개</a>
+            <a href="#">오시는 길</a>
+            <a href="#">개인정보처리방침</a>
+            <a href="#">이용약관</a>
+            <a href="#">이메일무단수집거부</a>
+        </div>
+
+<div class="footer-info">
+            우리 여행 이야기\
+            서울시 관악구 신림동 우장빌딩 5층\
+            대표번호 : 010-123-4567
+        </div>
+    </div>
+</footer>
+</body>
+</html>
