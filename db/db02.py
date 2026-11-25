@@ -44,7 +44,7 @@ while True:
 
     # 실행문 
     # sql = "select * from stuscore order by {i} desc"
-    sql = "select * from stuscore where (kor + eng + math) / 3 >= 80"
+    sql = f"select * from stuscore where (kor + eng + math) / 3 >= {avg}"
     # sql = f'select * from stuscore where kor>={kor} desc'
     cursor.execute(sql)
 
