@@ -236,9 +236,86 @@ low_score number(3),
 high_score number(3)
 );
 
+-- VVIP,VIP,GOLD,SILVER,BRONZE 
+insert into sturank values ('VVIP',91,100);
+insert into sturank values ('VIP',81,90);
+insert into sturank values ('GOLD',71,80);
+insert into sturank values ('SILVER',61,70);
+insert into sturank values ('BRONZE',0,60);
+commit;
+
+select * from sturank;
+select * from stuscore;
+
+select no,name,school,kor,srank 
+from stuscore, sturank
+where kor between low_score and high_score
+order by no; 
+
+-- non equi-join : 같은 컬럼은 없지만, 2개의 테이블을 가지고 검색
+select no,name,school,round((kor+eng+math)/3,2),srank 
+from stuscore, sturank
+where (kor+eng+math)/3 between low_score and high_score
+order by no;
+
+-- 
+select salary from employees
+order by salary desc;
+
+-- 0~3999    # E등급 
+-- 4000~6999   # D등급
+-- 7000~9999   # C등급
+-- 10000~11999  # B등급
+-- 12000~30000  # A등급
+
+-- non equi-join
+create table emprank(
+erank varchar2(20),
+low_salary number(20),
+high_salary number(20)
+);
+
+insert into emprank values ('A등급',12000,30000);
+insert into emprank values ('B등급',10000,11999);
+insert into emprank values ('C등급',7000,9999);
+insert into emprank values ('D등급',4000,6999);
+insert into emprank values ('E등급',0,3999);
+commit;
 
 
+select * from emprank; 
+select salary,erank
+from employees, emprank 
+where salary between low_salary and high_salary
+order by salary; 
+
+select * from emprank;
+
+-- case when then 
+select salary, 
+case
+when salary between 0 and 3999 then 'E등급'
+when salary between 4000 and 6999 then 'D등급'
+when salary between 7000 and 9999 then 'C등급'
+when salary between 10000 and 11999 then 'B등급'
+when salary between 12000 and 30000 then 'A등급'
+-- else 'A등급'
+end as emprank 
+from employees;
+
+select * from stuscore;
+alter table stuscore add rank varchar2(20);
 
 
+update stuscore a set rank = (
+-- case when-then
+SELECT student_id,
+CASE
+WHEN student_id BETWEEN 1 AND 10 THEN '1반'
+WHEN student_id BETWEEN 11 AND 20 THEN '2반'
+WHEN student_id BETWEEN 21 AND 30 THEN '3반'
+ELSE '기타'
+END AS class_name
+FROM students;
 
 
