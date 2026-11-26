@@ -284,7 +284,7 @@ commit;
 
 
 select * from emprank; 
-select salary,erank
+select emp_name,salary,erank,low_salary,high_salary,hire_date
 from employees, emprank 
 where salary between low_salary and high_salary
 order by salary; 
@@ -306,16 +306,221 @@ from employees;
 select * from stuscore;
 alter table stuscore add rank varchar2(20);
 
+-- case when-then
+select * from sturank;
+update stuscore a set rank = (
+select srank
+from sturank b
+where a.kor between b.low_score and b.high_score); 
+
+select * from stuscore;
+alter table stuscore add avg number(5,2);
+update stuscore set avg = (kor+eng+math)/3;
 
 update stuscore a set rank = (
--- case when-then
-SELECT student_id,
-CASE
-WHEN student_id BETWEEN 1 AND 10 THEN '1반'
-WHEN student_id BETWEEN 11 AND 20 THEN '2반'
-WHEN student_id BETWEEN 21 AND 30 THEN '3반'
-ELSE '기타'
-END AS class_name
-FROM students;
+select name, school, srank
+from sturank b
+where a.avg between b.low_score and b.high_score);
+
+select srank
+from sturank,stuscore
+where avg between low_score and high_score;
+
+--SELECT student_id,
+--CASE
+--WHEN student_id BETWEEN 1 AND 10 THEN '1반'
+--WHEN student_id BETWEEN 11 AND 20 THEN '2반'
+--WHEN student_id BETWEEN 21 AND 30 THEN '3반'
+--ELSE '기타'
+--END AS class_name
+--FROM students;
+
+-- bfile 분리 : filegroup 테이블 생성
+create table filegroup(
+bno number(4),
+bfile varchar2(100),
+constraint board_filegroup_fk_bno foreign key(bno)
+references board(bno) on delete cascade
+); 
+
+-- 컬럼삭제 
+alter table board drop column bfile;
+select * from board;
+
+insert into filegroup values (1,'1.jpg');
+insert into filegroup values (2,'1111.jpg');
+insert into filegroup values (2,'2222.jpg');
+insert into filegroup values (3,'333.jpg');
+insert into filegroup values (4,'44.jpg');
+insert into filegroup values (5,'5.jpg');
+insert into filegroup values (6,'6.jpg');
+commit;
+select * from filegroup;
+
+select a.bno,btitle,bfile from board a,filegroup b
+where a.bno = b.bno;
+
+select * from board where bno=1;
+select * from filegroup where bno=1; -- 여러 개 있을 경우가 있을 수 있음
+
+--
+create table event(
+eno number(4) primary key,
+etitle varchar2(1000),
+econtent clob,
+efile varchar2(100)
+);
+
+insert into event values (
+event_seq.nextval,'이벤트제목','내용입니다','1.jpg'
+);
+commit;
+
+select * from employees;
+select * from departments;
+select emp_name,a.department_id,department_name
+from employees a, departments b
+where a.department_id=b.department_id;
+
+select name, kor+eng+math total, sw from stuscore;
+
+-- 파일 여러 개 저장 
+-- equi join : 같은 컬럼을 가지고 2개의 테이블에서 검색
+-- non-equi join : 같은 컬럼은 없지만, 2개의 테이블에서 검색
+-- seif join : 자신의 테이블을 2번 호출해서 검색 
+select * from employees;
+select a.employee_id, a.emp_name, a.job_id, a.manager_id, b.emp_name
+from employees a,employees b
+where a.manager_id=b.employee_id; -- b.employee_id 는 상사의 이름이 출력
+
+-- null 값이 있는 것은 출력에서 제외
+select a.employee_id, a.emp_name, a.job_id, a.manager_id, b.emp_name
+from employees a,employees b -- seif join (자기 자신을 2번 호출해서 검색)
+where a.manager_id=b.employee_id
+order by employee_id;
+
+-- inner join
+-- outer join : null 값도 출력하라는 의미 
+-- 그룹함수는 null값이 제외
+select count(*), count(manager_id) from employees;
+select a.employee_id, a.emp_name, a.job_id, a.salary, a.manager_id, b.emp_name,
+from employees a,employees b -- self join (자기 자신을 2번 호출해서 검색)
+where a.manager_id=b.employee_id
+order by employee_id; 
+
+-- outer join
+-- seif join
+select a.employee_id,a.emp_name,a.manager_id,b.emp_name
+from employees a, employees b
+where a.manager_id = b.employee_id;
+
+select emp_name,manager_id from employees
+where manager_id is null; 
+
+-- null 값 포함 출력 (+)
+select a.employee_id,a.emp_name,a.manager_id,b.emp_name
+from employees a, employees b
+where a.manager_id = b.employee_id(+);
+
+--departments, employees 테이블에서
+-- employees 테이블에서 없는 부서번호와 부서명도 출력하시오 
+-- equi join으로 department_id, department_name 출력하시오
+select * from departments;
+select * from employees;
+
+-- equi join : outer join
+select emp_name, b.department_id, department_name 
+from employees a, departments b
+where a.department_id=b.department_id(+);
+
+-- b.department_id 에 null값을 넣고 싶으면 반대편이 (+)를 입력해야함
+-- 두 곳에는 (+) 입력은 불가능 
+select emp_name, b.department_id, department_name 
+from employees a, departments b
+where a.department_id(+)=b.department_id;
+
+-- a.department_id 에 null값을 넣고 싶으면 반대편이 (+)를 입력해야함
+-- outer join은 null값 출력 
+select emp_name,b.department_id,department_name
+from employees a,departments b
+where a.department_id(+) = b.department_id
+and emp_name is null;
+
+-- equi join
+select emp_name, a.department_id, department_name
+from employees a, departments b
+where a.department_id = b.department_id;
+
+-- ansi join
+select emp_name,department_id
+from employees inner join departments 
+using (department_id);
+
+-- ansi join + outer join(left)
+-- 이 코드에는 (+) 양 쪽에 입력 가능 
+select a.emp_name, a.manger_id,employee_id
+from employees a left outer join employees b
+on a,manger_id = b.employee_id;
+
+select a.emp_name, a.manger_id,employee_id
+from employees a left outer join employees b
+on a,manger_id(+) = b.employee_id(+);
+
+
+-- ansi join + outer join(left)
+select emp_name,a.department_id,department_name
+from employees a left outer join departments b
+on a.department_id = b.department_id;
+
+-- ansi join + outer join(right)
+select emp_name,a.department_id,department_name
+from employees a right outer join departments b
+on a.department_id = b.department_id;
+
+-- ansi join + outer join(full)
+select emp_name,a.department_id,department_name
+from employees a full outer join departments b
+on a.department_id = b.department_id;
+
+-- union 은 where 절로 사용해도 가능
+-- view 는 필요한 컬럼만 저장 가능. 민감정보를 보이지 않고 지정한 필요컬럼만 저장
+-- 일부의 컬럼만 보여지게 함
+-- 원하는 컬럼만 작성해서 다른 곳에 join으로 사용 가능
+create or replace view view_employees
+as select employee_id,emp_name,phone_number
+from employees;
+
+select * from view_employees;
+
+select * from stuscore;
+select * from students;
+select a.name,school,grade,kor,eng,math,avg
+from stuscore a, students b
+where a.name = b.name;
+
+-- 컬럼에 없는 컬럼 생성 (total 컬럼 생성)
+create or replace view view_stu
+(
+name,school,grade,kor,eng,math,total,avg
+) as 
+select a.name,school,grade,kor,eng,math,kor+eng+math as total,avg
+from stuscore a, students b
+where a.name = b.name;
+
+select * from view_stu;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
