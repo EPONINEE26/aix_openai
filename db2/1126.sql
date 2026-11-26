@@ -70,6 +70,173 @@ where a.job_id=b.job_id;
 select * from member;
 select * from stuscore;
 
+--drop table board;
+--drop table board2;
+--drop table member;
+--drop table students;
+--drop table stuscore;
+--drop table stuscore2;
+
+create table board2 as select * from board; 
+
+create table board (
+bno number(4) primary key,
+id varchar2(100),
+btitle varchar2(1000),
+bcontent clob,
+bgroup number(4),
+bstep number(4) default 0,
+bindent number(4) default 0,
+bhit number(4) default 0,
+bdate date default sysdate,
+bfile varchar2(100)
+);
+
+create table member(
+id varchar2(100) primary key,
+pw varchar2(100),
+name varchar2(100), 
+nickname varchar2(100),
+tel char(13),
+gender varchar2(100), 
+hobby varchar2(200),
+mdate date default sysdate
+);
+
+--drop table board;
+--drop table member;
+
+create table students(
+no number(4),
+name varchar2(100) primary key,
+major varchar2(100),
+grade number(2),
+age number(3),
+gender varchar2(100),
+hobby varchar2(200),
+sdate date default sysdate
+);
+
+create table stuscore(
+no number(4),
+name varchar2(100),
+school varchar2(100),
+grade varchar2(2),
+height number(5),
+kor number(4),
+eng number(4),
+math number(4),
+sw varchar2(100)
+);
+
+-- 외래키 등록 
+-- member의 primary key를 board foreign key로 등록 
+select * from member;
+select * from board;
+alter table board add constraints board_member_fk_id foreign key (id)
+references member(id) on delete set null; 
+
+select * from students;
+select * from stuscore;
+alter table stuscore add constraints stuscore_students_fk_name foreign key(name)
+references students(name) on delete cascade;
+
+-- equi join 을 name으로 실행완료
+select * from stuscore;
+select * from students;
+
+-- 성적출력하는데, 성별과 나이를 같이 출력하시오
+select a.no,a.name,gender,age,kor,eng,math from stuscore a, students b
+where a.name= b.name;
+
+-- 
+select * from board;
+select * from member;
+-- member의 nickname을 board로 join해 출력하시오
+-- primary key와 foreign key로 조인으로 등록을 해야만 하나만 수정해도 다른 곳도 수정 가능
+select bno,a.id, nickname, btitle, bcontent
+from board a, member b
+where a.id=b.id;
+
+select * from students;
+update students set grade=3 where name = 'Romonda';
+commit;
+update students set grade=4 where name = 'Romonda';
+commit;
+select * from stuscore;
+
+alter table stuscore drop column grade;
+
+select a.name,grade,kor,eng,math
+from students a, stuscore b
+where a.name=b.name;
+
+select a.name,grade,kor,eng,math
+from students a, stuscore b
+where a.name=b.name and kor>=90 and eng>=80;
+
+-- lower(a.name) : 대소문자 상관없이 a 자 포함된 이름 출력
+-- lower(name) : 어느 부분의 name을 사용할지에 대한 문제로 인해 에러 발생. 테이블명을 무조건 써야함
+-- 별칭을 쓰면 좋음. 아니면 모든 이름을 다 써야함
+select a.name,grade,kor,eng,math
+from students a, stuscore b
+where a.name=b.name and lower(a.name) like '%a%'; -- lower(a.name) : 대소문자 상관없이 a 자 포함된 이름 출력
+
+select * from employees;
+select * from departments;
+-- 사원명, 부서명, 입사일 출력
+-- 부서번호가 50번 이상만 출력하시오
+select a.emp_name,a.department_id,department_name,hire_date 
+from employees a, departments b
+where a.department_id = b.department_id
+and a.department_id >=50
+order by a.department_id;
+
+select * from employees;
+select * from jobs;
+-- job_id 가 manager인 사원의 job_id,job_title,salary,min_salary, hire_date출력하시오
+select a.job_id,job_title,salary,min_salary,hire_date
+from employees a, jobs b 
+where a.job_id = b.job_id and a.job_id like '%MAN%'; 
+
+-- job_id 가 manager인 사원의 입사일이 02~03월, 05월인 사원을 출력하시오 
+select a.job_id,job_title,salary,min_salary,hire_date
+from employees a, jobs b 
+where a.hire_date = b.hire_date and to_char(a.hire_date, 'mm')in(02,03,05) ;
+
+select to_char(hire_date, 'yyyy-mm-dd hh24:mi:ss') from employees;
+select to_char(hire_date, 'mm') from employees;
+
+select to_char(hire_date, 'mm') from employees
+where to_char(hire_date, 'mm')>='02' 
+and to_char(hire_date, 'mm')>='03' 
+and to_char(hire_date, 'mm')>='05';
+
+select substr(hire_date,4,2) from employees
+where substr(hire_date,4,2) in ('02','03','05');
+
+select a.job_id,job_title,salary,min_salary,hire_date
+from employees a,jobs b
+where a.job_id = b.job_id and a.job_id like '%MAN%'
+and substr(hire_date,4,2) in ('02','03','05');
+
+-- equi join : 같은 컬럼을 가지고 검색
+-- non equi join : 두 테이블 간 같은 컬럼이 없이 검색
+
+-- 3개의 테이블을 가지고 equi-join 
+select * from jobs;
+select a.department_id,department_name,a.job_id,job_title
+from employees a,departments b,jobs c
+where a.department_id=b.department_id and 
+a.job_id=c.job_id; 
+
+create table sturank(
+srank varchar2(10),
+low_score number(3),
+high_score number(3)
+);
+
+
 
 
 
